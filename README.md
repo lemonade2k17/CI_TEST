@@ -25,7 +25,7 @@ cmake --build build
 ctest --test-dir build --output-on-failure
 ```
 
-你会看到 16 组测试、共 31 项检查全部通过。也可以直接运行看详细输出：
+你会看到 7 组测试、共 15 项检查全部通过。也可以直接运行看详细输出：
 
 ```powershell
 .\build\test_adc_filter.exe
@@ -165,10 +165,8 @@ git push -u origin feature/median-filter # 2. 推到远端
 ci-demo/
 ├── .github/workflows/ci.yml   ← CI 配置：告诉服务器跑什么命令
 ├── CMakeLists.txt             ← 构建脚本
-├── include/adc_filter.h       ← 滑动平均滤波器接口（纯逻辑，无硬件依赖）
-├── include/median_filter.h    ← 中值滤波器接口（纯逻辑，无硬件依赖）
-├── src/adc_filter.c           ← 滑动平均滤波器实现
-├── src/median_filter.c        ← 中值滤波器实现（剔除尖峰）
+├── include/adc_filter.h       ← 接口（纯逻辑，无硬件依赖）
+├── src/adc_filter.c           ← 实现
 ├── tests/test_adc_filter.c    ← 单元测试（PC 上跑）
 └── README.md                  ← 你正在读的这个
 ```

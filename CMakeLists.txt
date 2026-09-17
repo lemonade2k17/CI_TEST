@@ -9,7 +9,7 @@ set(CMAKE_C_STANDARD_REQUIRED ON)
 #    这个 target 就是你将来要"抽出来"的那部分代码。
 #    PUBLIC 关键字表示：谁链接我，谁就自动获得 include 目录。
 # ---------------------------------------------------------------------------
-add_library(adc_filter STATIC src/adc_filter.c src/median_filter.c)
+add_library(adc_filter STATIC src/adc_filter.c)
 target_include_directories(adc_filter PUBLIC include)
 target_compile_options(adc_filter PRIVATE -Wall -Wextra -Werror)
 
