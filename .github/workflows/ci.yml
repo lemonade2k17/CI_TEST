@@ -1,0 +1,68 @@
+# 这就是 CI 的全部内容：一份告诉服务器"该跑哪些命令"的清单。
+#
+#   push 代码 → GitHub 自动起一台干净的 Ubuntu → 按 steps 跑 → 结果回写到网页
+#
+# 【最重要的一点】不需要在网页上点任何"启用"按钮。
+# 这个文件存在于 .github/workflows/ 下 = CI 已经开启，就这么简单。
+
+name: CI
+
+# ---------------------------------------------------------------------------
+# on: 决定"什么时候跑"。这是 CI 唯一需要"设置"的地方。
+# ---------------------------------------------------------------------------
+on:
+  # 只在 main 分支收到 push 时跑。
+  #
+  # ⚠️ 为什么要写 branches 过滤器？
+  #    如果只写 `push:`（不加 branches），那么任何分支的 push 都会触发；
+  #    再加上下面的 pull_request，同一份代码就会跑两遍
+  #    （push 触发一次 + PR 触发一次），白白消耗免费额度。
+  #    限制成只监听 main 之后：
+  #      · 往 main 直接推        → 跑一次（push 事件）
+  #      · 往功能分支推、且开着 PR → 跑一次（pull_request 事件）
+  push:
+    branches: [main]
+
+  # 针对 main 的 PR：创建时跑，之后每次往 PR 分支 push 也会重新跑
+  pull_request:
+    branches: [main]
+
+  # 在网页 Actions 页面增加一个 "Run workflow" 手动触发按钮，方便随时重跑
+  workflow_dispatch:
+
+# 同一个分支连续 push 时，自动取消上一次还没跑完的任务，只保留最新的一次。
+# 避免你连推三次就要等三轮。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    # 在 GitHub 提供的一台全新 Ubuntu 虚拟机上跑，用完就销毁
+    # 想在自己的机器上跑（能插开发板）就改成 self-hosted
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 1. 拉取代码
+        uses: actions/checkout@v4
+
+      - name: 2. 配置（生成构建文件）
+        run: cmake -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: 3. 编译
+        run: cmake --build build
+
+      - name: 4. 运行单元测试
+        run: ctest --test-dir build --output-on-failure
+
+      # ------------------------------------------------------------------
+      # 嵌入式专属的下一步：交叉编译真实固件
+      # 取消下面的注释即可
+      #
+      # - name: 5. 交叉编译 ARM 固件
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y gcc-arm-none-eabi
+      #     cmake -B build-arm -DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake
+      #     cmake --build build-arm
+      # ------------------------------------------------------------------

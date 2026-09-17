@@ -1,0 +1,44 @@
+# 构建产物 —— 这些是"生成出来的东西"，永远不要提交
+#
+# 注意：不要写 `*.cmake`！
+#   交叉编译工具链文件（如 arm-gcc.cmake）也是 .cmake 后缀，
+#   但它必须提交进仓库，否则别人和 CI 都编译不了。
+#   CMake 生成的那些 .cmake 文件都在 build/ 里，已被下面第一行覆盖。
+
+build/
+build-*/
+out/
+Debug/
+Release/
+cmake-build-*/
+
+# CMake 生成物（保险起见，正常都在 build/ 里）
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+
+# 编译产物
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dll
+*.exe
+*.elf
+*.bin
+*.hex
+*.map
+*.d
+
+# IDE / 编辑器
+.vscode/
+.idea/
+*.swp
+*~
+.vs/
+
+# 操作系统
+Thumbs.db
+Desktop.ini
+.DS_Store

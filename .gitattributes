@@ -1,0 +1,30 @@
+# 统一换行符处理，避免 Windows(CRLF) 和 Linux(LF) 混用带来的问题
+#
+# 为什么需要这个文件？
+#   你在 Windows 上写代码，换行是 CRLF；
+#   GitHub 的 CI 跑在 Linux 上，换行是 LF。
+#   不统一的话，每次换台机器都显示"整个文件都被修改了"，
+#   diff 全是噪音，review 根本没法看。
+#
+# eol=lf 表示：仓库里一律存 LF，检出时也保持 LF。
+
+* text=auto eol=lf
+
+# 以下是二进制文件，禁止任何换行符转换
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.pdf   binary
+
+# 嵌入式构建产物（养成习惯：这些永远不该进版本库，这里只是双重保险）
+*.elf   binary
+*.bin   binary
+*.hex   binary
+*.map   binary
+*.o     binary
+*.a     binary
+*.so    binary
+*.dll   binary
+*.exe   binary
